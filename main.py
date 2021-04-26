@@ -145,9 +145,12 @@ def send_verification():
     verification_code = random.randint(100000, 1000000)
     msg = Message("Подтверждение адреса почты", recipients=[user.email])
     msg.body = f"Проверка адреса введенной почты\n Здравствуйте, {user.username}! Вам пришёл код подтверждения {verification_code}.\nЕсли вы не отправляли данный запрос, то проигнорируйте данное сообщение.\nС уважением, \n\tтехподдержка startwi"
-    mail.send(msg)
-    print(verification_code)
-    return redirect('/verification')
+    print("Код верификации: ", verification_code)
+    try:
+        mail.send(msg)
+        return redirect('/verification')
+    except Exception:
+        return redirect('/verification')
 
 
 # Изменение пароля
