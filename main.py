@@ -2,12 +2,13 @@ import os
 import random
 from datetime import datetime
 
+from flask_migrate import Migrate
 from flask_script import Manager
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.datastructures import CombinedMultiDict
 from werkzeug.exceptions import abort
-from werkzeug.utils import redirect
+from werkzeug.utils import redirect, secure_filename
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_mail import Mail, Message
 from flask_migrate import Migrate, MigrateCommand
@@ -57,9 +58,9 @@ mail = Mail(app)
 # Запуск основной программы
 def main():
     db_session.global_init("db/twitter2.db")
-    # app.run(host='127.0.0.1', port=8080, debug=True)
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='127.0.0.1', port=8080)
+    # port = int(os.environ.get("PORT", 5000))
+    # app.run(host='0.0.0.0', port=port)
 
 
 # Начальная страница
@@ -231,7 +232,7 @@ def upload_photo():
         if f is not None:
             # filename = secure_filename(f.filename)
             filename = f.filename
-            f.save(os.path.join('../../../PycharmProjects/pythonProject8/static\img', filename))
+            f.save(os.path.join('static\img', filename))
             user.photo = filename if filename else 'not-found.png'
         else:
             user.photo = 'not-found.png'
@@ -776,6 +777,7 @@ def like(news_id, back):
 @app.route('/dislike/<news_id>/<back>', methods=['GET', 'POST'])
 @login_required
 def dislike(news_id, back):
+    print('r43')
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.id == int(news_id)).first()
     if str(current_user.id) in news.dislikes.split(', '):
@@ -786,7 +788,6 @@ def dislike(news_id, back):
         news.dislikes += ', ' + str(current_user.id)
     db_sess.merge(news)
     db_sess.commit()
-    print(back)
     if back == 'newstape':
         return redirect(f'/newstape')
     return redirect(f'/account/{db_sess.query(User).filter(User.id == news.user_id).first().username}')
