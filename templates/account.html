@@ -72,9 +72,9 @@
                             {% endif %}
                             {{ news.likes.split(', ') | length - 1 }}&nbsp;
                             {% if str(current_user.id) not in news.dislikes.split(', ') %}
-                    <a href="/dislike/{{ news.id }}/account"><img src="{{ url_for('static', filename='img/no-dislike.png') }}" style="width: 19px;"></a>
+                    <a href="/dislike/{{ news.id }}/newstape"><img src="{{ url_for('static', filename='img/no-dislike.png') }}" style="width: 19px;"></a>
                 {% else %}
-                    <a href="/dislike/{{ news.id }}/account"><img src="{{ url_for('static', filename='img/ddislike.jpg') }}" style="width: 19px;"></a>
+                    <a href="/dislike/{{ news.id }}/newstape"><img src="{{ url_for('static', filename='img/ddislike.jpg') }}" style="width: 19px;"></a>
                 {% endif %}
                 {{ news.dislikes.split(', ') | length - 1 }}
                         </div>
